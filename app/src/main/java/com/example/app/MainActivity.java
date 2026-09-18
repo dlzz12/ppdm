@@ -27,47 +27,5 @@ public class MainActivity extends AppCompatActivity {
             return insets;
 
         });
-
-        //associar componentes da IU a variáveis locais
-        EditText edMin,edMax;
-        edMin = findViewById(R.id.edMin);
-        edMax = findViewById(R.id.edMax);
-
-        TextView textView=findViewById(R.id.textView);
-        Button b=findViewById(R.id.button);
-
-        b.setOnClickListener(v -> {
-
-            Random random = new Random();
-            String smax= edMax.getText().toString();
-            String smin= edMin.getText().toString();
-
-            if(smin.trim().equals("")){
-                edMin.setError("Informe um Valor");
-                edMin.requestFocus();
-                return;
-            }
-            if(smax.trim().equals("")){
-                edMax.setError("Informe um valor");
-                edMax.requestFocus();
-                return;
-            }
-
-            int min  = Integer.parseInt(edMin.getText().toString());
-            int max = Integer.parseInt(edMax.getText().toString());
-
-            if(min>max){
-                edMax.setError("O valor máximo deve ser maior que o mínimo");
-                return;
-
-            }
-
-            int r = (random.nextInt( max-min))+min;
-            textView.setText(Integer.toString(r));
-            Intent intent = new Intent(MainActivity.this,MainActivity2.class);
-            intent.putExtra("valor",r);
-
-            startActivity(intent);
-        });
     }
 }
