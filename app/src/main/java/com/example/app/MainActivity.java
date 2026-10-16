@@ -1,6 +1,12 @@
 package com.example.app;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,16 +15,42 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
+SQLiteDatabase database;
 
+EditText edText;
+Button button;
+ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        database=openOrCreateDatabase("notinhas", MODE_PRIVATE, null);
+    database.execSQL("CREATE TABLE IF NOT EXISTS notas(id INTEGER PRIMARY KEY AUTOINCREMENT, titulo VARCHAR, conteudo VARCHAR)");
+    edText=findViewById(R.layout.activity_main);
+    button=findViewById(R.layout.activity_main);
+    listView=findViewById(R.layout.activity_main);
+
+    button.setOnClickListener(view -> {
+        String titulo=edText.getText().toString();
+        ContentValues values=new ContentValues();
+        values.put("título", titulo);
+    int id = (int) database.insert("notinhas", null, values);
+    if(id > 0){
+        Toast.makeText(getApplicationContext(),
+                "Nota salva com sucesso",
+                Toast.LENGTH_SHORT).show();
     }
-}
+    else{
+        Toast.makeText(getApplicationContext(),
+                "Erro ao salvar nota",
+                Toast.LENGTH_SHORT).show();
+    }
+    });
+
+
+    }
+
+    public void listarNotas(){
+        Cursor c = database.rawQuery("SELECT * FROM notas LIMIT ?", new String[]{"100"});
+    }
+    }
